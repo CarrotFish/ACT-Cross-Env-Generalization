@@ -1,0 +1,81 @@
+name: act-cross-env
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+  - defaults
+
+dependencies:
+  # Python 版本
+  - python=3.9
+
+  # PyTorch (CUDA 11.8)
+  - pytorch=2.1.0
+  - torchvision=0.16.0
+  - torchaudio=2.1.0
+  - pytorch-cuda=11.8
+
+  # 科学计算
+  - numpy>=1.24.0
+  - scipy>=1.10.0
+
+  # 图像处理
+  - pillow>=9.5.0
+  - opencv>=4.7.0
+
+  # 配置管理
+  - pyyaml>=6.0
+
+  # 进度条
+  - tqdm>=4.65.0
+
+  # pip 安装的包
+  - pip:
+    # LeRobot 框架 (包含 ACT 实现)
+    - lerobot>=0.1.0
+
+    # CALVIN 仿真环境
+    # 注意: calvin-env 需要额外的系统依赖 (MuJoCo, PyBullet)
+    # 详见: https://github.com/mees/calvin
+    # - calvin-env>=0.1.0
+
+    # 日志记录 (二选一)
+    - wandb>=0.15.0
+    # - swanlab>=0.3.0   # 国内用户推荐，取消注释以使用
+
+    # 混合精度训练
+    - accelerate>=0.21.0
+
+    # 实验配置管理 (可选，用于更复杂的配置继承)
+    # - hydra-core>=1.3.0
+    # - omegaconf>=2.3.0
+
+    # 代码质量
+    - black>=23.0.0
+    - flake8>=6.0.0
+
+    # Jupyter (用于结果可视化分析)
+    - jupyter>=1.0.0
+    - matplotlib>=3.7.0
+    - seaborn>=0.12.0
+
+# ============================================================
+# 安装说明:
+#
+# 1. 创建并激活环境:
+#    conda env create -f environment.yml
+#    conda activate act-cross-env
+#
+# 2. 验证 PyTorch GPU 支持:
+#    python -c "import torch; print(torch.cuda.is_available())"
+#
+# 3. (可选) 安装 CALVIN 仿真环境:
+#    pip install git+https://github.com/mees/calvin_env.git
+#
+# 4. 登录日志服务:
+#    wandb login          # 使用 WandB
+#    swanlab login        # 使用 SwanLab (国内推荐)
+#
+# 注意: 若在 AutoDL/Colab/Kaggle 上运行，GPU 驱动版本可能不同，
+#       请根据实际 CUDA 版本调整 pytorch-cuda 的版本号。
+# ============================================================

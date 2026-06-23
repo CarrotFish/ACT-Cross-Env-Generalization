@@ -1,0 +1,48 @@
+# ============================================================
+# 任务 1: 基础策略训练配置
+# 仅使用 CALVIN 环境 B 的数据训练基础视觉-动作策略模型
+# 用于与多环境联合训练模型进行 Zero-shot 泛化能力对比
+# ============================================================
+
+# 继承基础配置
+defaults:
+  - base_act
+
+# --- 实验标识 ---
+experiment:
+  name: "single_env_B"
+  description: >
+    任务1: 仅在 CALVIN 环境 B 上训练 ACT 基础策略。
+    该模型将作为 Baseline，与多环境联合训练模型 (ABC) 在
+    未见过的环境 D 上进行 Zero-shot 泛化能力对比。
+  tags: ["single-env", "env-B", "baseline", "task1"]
+
+# --- 数据配置 ---
+data:
+  # 任务1: 仅使用环境 B 的数据
+  train_envs: ["B"]
+  # 验证集使用环境 B 的保留数据 (同分布验证)
+  val_envs: ["B"]
+  # 数据集分割比例
+  train_split: 0.9
+  val_split: 0.1
+  # 每个环境最多使用的 episode 数量 (null = 使用全部)
+  # 设备性能受限时可设置较小值，例如: 200
+  max_episodes_per_env: null
+
+# --- 训练超参数 (与任务2保持完全一致，确保对比公平) ---
+training:
+  batch_size: 32
+  num_epochs: 100
+  lr: 1.0e-4
+  weight_decay: 1.0e-4
+  grad_clip_norm: 10.0
+  lr_scheduler: "cosine"
+  warmup_steps: 1000
+  seed: 42
+
+# --- 路径配置 ---
+paths:
+  data_root: "./data/calvin"
+  checkpoint_dir: "./checkpoints/single_env_B"
+  log_dir: "./logs/single_env_B"

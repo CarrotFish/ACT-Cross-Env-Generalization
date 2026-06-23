@@ -1,0 +1,47 @@
+# ============================================================
+# 多环境联合训练配置 (使用 CALVIN 环境 A, B, C 混合训练)
+# 目标: 提升模型的跨环境泛化能力，用于 Zero-shot 测试环境 D
+# ============================================================
+
+# 继承基础配置
+defaults:
+  - base_act
+
+# --- 实验标识 ---
+experiment:
+  name: "joint_env_ABC"
+  description: "在 CALVIN 环境 A, B, C 上联合训练 ACT，测试对环境 D 的 Zero-shot 泛化"
+  tags: ["joint-env", "env-ABC", "cross-env", "zero-shot"]
+
+# --- 数据配置 (覆盖 base_act.yaml) ---
+data:
+  # 使用环境 A, B, C 的混合数据进行训练
+  train_envs: ["A", "B", "C"]
+  # 验证集使用各环境的保留数据
+  val_envs: ["A", "B", "C"]
+  # Zero-shot 测试目标环境 (训练时不可见)
+  test_envs: ["D"]
+  # 数据集分割比例
+  train_split: 0.9
+  val_split: 0.1
+  # 多环境数据混合策略: "uniform" (均匀采样) 或 "proportional" (按数据量比例)
+  mixing_strategy: "uniform"
+  # 每个环境最多使用的 episode 数量 (null = 使用全部)
+  # 设备性能受限时可设置较小值，例如 500 表示每个环境只用 500 条 episode
+  # 命令行可通过 --max_episodes 500 覆盖此参数
+  max_episodes_per_env: null
+
+# --- 训练超参数 (覆盖 base_act.yaml) ---
+training:
+  # 联合训练数据量更大，适当增加 batch size
+  batch_size: 48
+  num_epochs: 150
+  lr: 1.0e-4
+  # 更长的预热以适应多样化数据分布
+  warmup_steps: 2000
+
+# --- 路径配置 (覆盖 base_act.yaml) ---
+paths:
+  data_root: "./data/calvin"
+  checkpoint_dir: "./checkpoints/joint_env_ABC"
+  log_dir: "./logs/joint_env_ABC"
