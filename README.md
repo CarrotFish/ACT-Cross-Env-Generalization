@@ -116,35 +116,6 @@ wandb login       # WandB
 
 ---
 
-## 📦 数据准备
-
-```bash
-mkdir -p data/calvin
-
-# 从 HuggingFace 下载 CALVIN ABCD→D 数据集
-python -c "
-from huggingface_hub import snapshot_download
-snapshot_download(
-    repo_id='lerobot/calvin_abc_d',
-    repo_type='dataset',
-    local_dir='data/calvin'
-)
-"
-```
-
-数据集目录结构：
-```
-data/calvin/task_ABCD_D/
-├── training/       # 环境 A, B, C 的训练数据
-│   ├── ep_start_end_ids.npy
-│   └── frame_*.npz
-└── validation/     # 环境 D 的验证/测试数据
-    ├── ep_start_end_ids.npy
-    └── frame_*.npz
-```
-
----
-
 ## 🚀 实验执行流程
 
 ### Task 1 — 基础策略训练 (仅环境 B)
